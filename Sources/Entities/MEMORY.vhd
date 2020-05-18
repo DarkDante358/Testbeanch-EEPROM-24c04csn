@@ -1,23 +1,8 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 18.05.2020 06:01:03
--- Design Name: 
--- Module Name: LOGIC - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
+-- Authors: Jakub Wójcik, Dominik Rudzik, Karolina Sroczyk
+-- Name: MEMORY
+-- Desc: Collection of 512 WORDS ith simple logic
 ----------------------------------------------------------------------------------
-
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;

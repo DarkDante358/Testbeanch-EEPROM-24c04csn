@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------
 -- Authors: Jakub Wójcik, Dominik Rudzik, Karolina Sroczyk
--- Name: LOGIC
--- Desc: Logic responible for encoding and decoding data from/to I2C, MEMORY modules
+-- Name: I2C
+-- Desc: I2C transciver
 ----------------------------------------------------------------------------------
 
 library IEEE;
@@ -16,11 +16,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity LOGIC is
+entity I2C is
 --  Port ( );
-end LOGIC;
+end I2C;
 
-architecture Behavioral of LOGIC is
+architecture Behavioral of I2C is
 
 begin
 
