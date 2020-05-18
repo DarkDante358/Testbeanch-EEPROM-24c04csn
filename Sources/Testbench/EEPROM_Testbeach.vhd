@@ -1,13 +1,16 @@
--- Authors: Jakub Wójcik, Dominik Rudzik
-
+----------------------------------------------------------------------------------
+-- Authors: Jakub Wójcik, Dominik Rudzik, Karolina Sroczyk
+-- Name: EEPROM_Testbench
+-- Desc: Testbench Testing MASTER and EEPROM components
+----------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.ALL;
 use ieee.numeric_std.all;
  
-entity EEPROM_tb is
-end EEPROM_tb;
+entity EEPROM_Testbench is
+end EEPROM_Testbench;
  
-architecture behave of EEPROM_tb is
+architecture behave of EEPROM_Testbench is
  
   signal t_CLK     : std_logic := '0';
   signal t_Button    : std_logic := '1';
