@@ -1,3 +1,9 @@
+----------------------------------------------------------------------------------
+-- Authors: Jakub Wójcik, Dominik Rudzik, Karolina Sroczyk
+-- Name: EEPROM
+-- Desc: Collection of components designed to mimic 24C04 EEPROM
+----------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 

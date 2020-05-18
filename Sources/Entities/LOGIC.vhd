@@ -1,23 +1,8 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 18.05.2020 06:01:03
--- Design Name: 
--- Module Name: LOGIC - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
+-- Authors: Jakub Wójcik, Dominik Rudzik, Karolina Sroczyk
+-- Name: LOGIC
+-- Desc: Logic responible for encoding and decoding data from/to I2C, MEMORY modules
 ----------------------------------------------------------------------------------
-
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -32,7 +17,13 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity LOGIC is
---  Port ( );
+  Port ( CellAdd: OUT STD_LOGIC_VECTOR(7 downto 0);
+         WORD: OUT STD_LOGIC_VECTOR(7 downto 0);
+         DATA: OUT STD_LOGIC_VECTOR(7 downto 0);
+         ACTIONS: OUT STD_LOGIC_VECTOR(1 downto 0);
+         CLK: IN STD_LOGIC;
+         RW: OUT STD_LOGIC;
+         RESET: IN STD_LOGIC);
 end LOGIC;
 
 architecture Behavioral of LOGIC is
