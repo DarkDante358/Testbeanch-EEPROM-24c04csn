@@ -1,0 +1,19 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Mon May 18 06:44:43 2020
+# Process ID: 10212
+# Current directory: D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/EEPROM_24C02-VIVADO_proj
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent4564 D:\Studia\s6\PUL\Projekt koñcowy\Kod\EEPROM-24c04 - calosc\EEPROM_24C02-VIVADO_proj\EEPROM_24C02-VIVADO_proj.xpr
+# Log file: D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/EEPROM_24C02-VIVADO_proj/vivado.log
+# Journal file: D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/EEPROM_24C02-VIVADO_proj\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project {D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/EEPROM_24C02-VIVADO_proj/EEPROM_24C02-VIVADO_proj.xpr}
+update_compile_order -fileset sources_1
+add_files {{D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Entities/MEMORY.vhd} {D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Entities/I2C.vhd} {D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Entities/EEPROM.vhd} {D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Entities/LOGIC.vhd}}
+update_compile_order -fileset sources_1
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+add_files -fileset sim_1 {{D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Testbench/EEPROM_Testbeach.vhd} {D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Testbench/I2C_Testbench.vhd} {D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Testbench/LOGIC_Testbench.vhd} {D:/Studia/s6/PUL/Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Testbench/MEMORY_Testbench.vhd}}
+update_compile_order -fileset sim_1
