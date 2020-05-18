@@ -13,27 +13,31 @@ end I2C_Testbench;
  
 architecture behave of I2C_Testbench is
   
+    signal t_SDA : STD_LOGIC;
+    signal t_SCL : STD_LOGIC;
+    signal t_DATA: STD_LOGIC_VECTOR (7 downto 0);
+    signal t_ACTIONS: STD_LOGIC;
+    signal t_RESET: STD_LOGIC;
+  
     component I2C is
-    port (
-      );
+      Port ( SDA : INOUT STD_LOGIC;
+             SCL : OUT STD_LOGIC;
+             DATA: INOUT STD_LOGIC_VECTOR (7 downto 0);
+             ACTIONS: IN STD_LOGIC;
+             RESET: IN STD_LOGIC);
     end component I2C;
   
-    constant clk_period : time := 10 ns; -- 100 MHz (tyle co ma makieta)
-  
   begin
-    clk_proc : process
-    begin
-        t_CLK  <= '0';
-        wait for clk_period;
-        t_CLK <= '1';
-        wait for clk_period;
-    end process clk_proc;
-    
 -- Component instances
     uut : I2C
-    Port map (
-      );
-      
+    Port map ( 
+        SDA => t_SDA,
+        SCL => t_SCL,
+        DATA => t_DATA,
+        ACTIONS => t_ACTIONS,
+        RESET => t_RESET
+    );
+
 -- test
 
   sim : process
