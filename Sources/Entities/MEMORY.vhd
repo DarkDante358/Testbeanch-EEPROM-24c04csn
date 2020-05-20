@@ -17,7 +17,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity MEMORY is
---  Port ( );
+    Port ( CelAdd : IN STD_LOGIC_VECTOR (7 downto 0);
+           WORD: INOUT STD_LOGIC_VECTOR (7 downto 0);
+           RW: IN STD_LOGIC;
+           RESET: IN STD_LOGIC);
 end MEMORY;
 
 architecture Behavioral of MEMORY is

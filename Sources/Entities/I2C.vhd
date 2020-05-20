@@ -17,7 +17,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity I2C is
---  Port ( );
+  Port ( SDA : INOUT STD_LOGIC;
+         SCL : OUT STD_LOGIC;
+         DATA: INOUT STD_LOGIC_VECTOR (7 downto 0);
+         ACTIONS: IN STD_LOGIC;
+         RESET: IN STD_LOGIC);
 end I2C;
 
 architecture Behavioral of I2C is
