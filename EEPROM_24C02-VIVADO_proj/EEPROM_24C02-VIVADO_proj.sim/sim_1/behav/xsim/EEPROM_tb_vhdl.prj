@@ -1,7 +1,0 @@
-# compile vhdl design source files
-vhdl xil_defaultlib  \
-"../../../../../../../../Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Entities/EEPROM.vhd" \
-"../../../../../../../../Projekt koñcowy/Kod/EEPROM-24c04 - calosc/Sources/Testbench/EEPROM_Testbeach.vhd" \
-
-# Do not sort compile order
-nosort
