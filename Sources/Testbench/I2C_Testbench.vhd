@@ -22,6 +22,7 @@ architecture behave of I2C_Testbench is
     signal t_SCL90: STD_LOGIC :='0';
     signal internal_SCL : STD_LOGIC := '1';
     signal flag : STD_LOGIC := '0';
+    signal f_awaiting : STD_LOGIC := '0';
   
     component I2C is
       Port ( SDA : INOUT STD_LOGIC;
@@ -70,9 +71,7 @@ architecture behave of I2C_Testbench is
                     t_DATA <= '0' & t_DATA (7 downto 1);
         end if;  
      end process data_send;
-   -- proces przesy³ania danych (SCL90)
-   
-    --if(zbocze_barast(SCL90) and flaga przsy³u danych)
+
 
   sym : process
   begin
@@ -86,11 +85,15 @@ architecture behave of I2C_Testbench is
   wait for time_base; -- Konice bitu startu
   t_START <= '1';
   wait for time_base*9;
-  
+  t_DATA <= "00001100";
   -- Wys³anie 8 bitów, np liczba 12
   
-  -- flaga rozpocznij przesy³anie danych
-  
+  flag <= '1';
+  f_awaiting <= '1';
+  wait until rising_edge (t_SCL);
+  wait for time_base/2;
+  wait until t_SDA = '0';
+  f_awaiting <= '0';
   -- Czekanie na ACK z modu³u I2C
   
   t_START <= '0';
@@ -107,7 +110,7 @@ architecture behave of I2C_Testbench is
   end process sym;
   
   t_SCL <= internal_SCL when t_START = '1' else '1';
- -- t_SDA <= 'Z' when 
+  t_SDA <= 'Z' when f_awaiting = '1'else '0';
   -- podobny warunek dla SDA, ale ma byæ Z, kiedy oczekuje na odpowiedŸ
     
 end behave;
