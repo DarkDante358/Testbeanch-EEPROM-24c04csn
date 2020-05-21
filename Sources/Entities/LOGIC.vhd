@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub WÃ³jcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: LOGIC
 -- Desc: Logic responible for encoding and decoding data from/to I2C, MEMORY modules
 ----------------------------------------------------------------------------------

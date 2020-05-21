@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub WÃ³jcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: I2C_Testbench
 -- Desc: Testbench testing I2C component
 ----------------------------------------------------------------------------------
@@ -21,6 +21,7 @@ architecture behave of I2C_Testbench is
     signal t_START: STD_LOGIC := '0';
     signal t_SCL90: STD_LOGIC :='0';
     signal internal_SCL : STD_LOGIC := '1';
+    signal flag : STD_LOGIC := '0';
   
     component I2C is
       Port ( SDA : INOUT STD_LOGIC;
@@ -50,7 +51,28 @@ architecture behave of I2C_Testbench is
         internal_SCL <= '1';
         wait for time_base/2;
     end process times;
+    
+     times2 : process
+    begin
+        wait for time_base/4;
+        t_SCL90 <= '0';
+        wait for time_base/2;
+        t_SCL90 <= '1';
+        wait for time_base/4;
+    end process times2;
+    
+    
 -- test
+    data_send : process(t_SCL90)
+    begin
+        if(t_SCL90'event and t_SCL90 = '1' and flag = '1') then
+            t_SDA <= t_DATA(0);
+                    t_DATA <= '0' & t_DATA (7 downto 1);
+        end if;  
+     end process data_send;
+   -- proces przesy³ania danych (SCL90)
+   
+    --if(zbocze_barast(SCL90) and flaga przsy³u danych)
 
   sym : process
   begin
@@ -66,6 +88,8 @@ architecture behave of I2C_Testbench is
   wait for time_base*9;
   
   -- Wys³anie 8 bitów, np liczba 12
+  
+  -- flaga rozpocznij przesy³anie danych
   
   -- Czekanie na ACK z modu³u I2C
   
@@ -83,6 +107,7 @@ architecture behave of I2C_Testbench is
   end process sym;
   
   t_SCL <= internal_SCL when t_START = '1' else '1';
+ -- t_SDA <= 'Z' when 
   -- podobny warunek dla SDA, ale ma byæ Z, kiedy oczekuje na odpowiedŸ
     
 end behave;

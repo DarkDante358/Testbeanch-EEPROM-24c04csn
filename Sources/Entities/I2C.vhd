@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub WÃ³jcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: I2C
 -- Desc: I2C transciver
 ----------------------------------------------------------------------------------
