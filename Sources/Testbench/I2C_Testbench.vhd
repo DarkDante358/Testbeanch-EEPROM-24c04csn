@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wojcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: I2C_Testbench
 -- Desc: Testbench testing I2C component
 ----------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ architecture behave of I2C_Testbench is
         t_SCL90 <= '1';
         wait for time_base/4;
     end process times2;
-    
+  
     
 -- test
     data_send : process(t_SCL90)
@@ -73,9 +73,13 @@ architecture behave of I2C_Testbench is
      end process data_send;
 
 
+   -- proces przesyÂ³ania danych (SCL90)
+   
+    --if(zbocze_barast(SCL90) and flaga przsyÂ³u danych)
+
   sym : process
   begin
-  t_RESET <= '1'; -- reset uk³adu
+  t_RESET <= '1'; -- reset ukÂ³adu
   wait for time_base;
   t_RESET <= '0';
   
@@ -86,15 +90,17 @@ architecture behave of I2C_Testbench is
   t_START <= '1';
   wait for time_base*9;
   t_DATA <= "00001100";
-  -- Wys³anie 8 bitów, np liczba 12
+  -- WysÂ³anie 8 bitÃ³w, np liczba 12
   
+
   flag <= '1';
   f_awaiting <= '1';
   wait until rising_edge (t_SCL);
   wait for time_base/2;
   wait until t_SDA = '0';
   f_awaiting <= '0';
-  -- Czekanie na ACK z modu³u I2C
+
+  -- Czekanie na ACK z moduÂ³u I2C
   
   t_START <= '0';
   
@@ -111,6 +117,6 @@ architecture behave of I2C_Testbench is
   
   t_SCL <= internal_SCL when t_START = '1' else '1';
   t_SDA <= 'Z' when f_awaiting = '1'else '0';
-  -- podobny warunek dla SDA, ale ma byæ Z, kiedy oczekuje na odpowiedŸ
+  -- podobny warunek dla SDA, ale ma byÃ¦ Z, kiedy oczekuje na odpowiedÅ¸
     
 end behave;
