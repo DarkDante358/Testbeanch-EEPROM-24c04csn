@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub WÃ³jcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: I2C_Testbench
 -- Desc: Testbench testing I2C component
 ----------------------------------------------------------------------------------
@@ -50,7 +50,14 @@ architecture behave of I2C_Testbench is
         internal_SCL <= '1';
         wait for time_base/2;
     end process times;
+    
+    -- Zrobiæ drugi zegar, który bêdzie przesuniêty o 90 stopni wzdlêdem tego wy¿ej
+    
 -- test
+
+   -- proces przesy³ania danych (SCL90)
+   
+    --if(zbocze_barast(SCL90) and flaga przsy³u danych)
 
   sym : process
   begin
@@ -66,6 +73,8 @@ architecture behave of I2C_Testbench is
   wait for time_base*9;
   
   -- Wys³anie 8 bitów, np liczba 12
+  
+  -- flaga rozpocznij przesy³anie danych
   
   -- Czekanie na ACK z modu³u I2C
   
