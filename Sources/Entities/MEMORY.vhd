@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub WÃ³jcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: MEMORY
 -- Desc: Collection of 512 WORDS ith simple logic
 ----------------------------------------------------------------------------------
