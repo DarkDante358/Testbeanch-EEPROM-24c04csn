@@ -54,21 +54,28 @@ architecture behave of I2C_Testbench is
 
   sym : process
   begin
-  t_RESET <= '1';
+  t_RESET <= '1'; -- reset uk³adu
   wait for time_base;
   t_RESET <= '0';
-  t_SDA <= '1';
+  
+  t_SDA <= '1'; ---- Start bit
    wait for time_base;
   t_SDA <= '0';
-  wait for time_base;
+  wait for time_base; -- Konice bitu startu
   t_START <= '1';
   wait for time_base*9;
+  
+  -- Wys³anie 8 bitów, np liczba 12
+  
+  -- Czekanie na ACK z modu³u I2C
+  
   t_START <= '0';
-  wait for time_base/2;
+  
+  wait for time_base/2; -- bit stopu
   t_SDA <= '1';
   wait for time_base*2;
   t_START <= '0';
-  t_SDA <= 'Z';
+  t_SDA <= 'Z'; -- koniec transmisji
   wait for time_base*4;
   
   assert false report "Tests Complete" severity failure;
@@ -76,5 +83,6 @@ architecture behave of I2C_Testbench is
   end process sym;
   
   t_SCL <= internal_SCL when t_START = '1' else '1';
+  -- podobny warunek dla SDA, ale ma byæ Z, kiedy oczekuje na odpowiedŸ
     
 end behave;

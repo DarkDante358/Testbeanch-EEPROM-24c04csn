@@ -23,6 +23,8 @@ end I2C;
 
 architecture Behavioral of I2C is
     constant WORD_SIZE : integer := 8;
+    constant tHIGH : time := 0.6 us; -- Datasheet Table 5, used for delay of data sampling, to not hit SCL state change
+    constant tAA : time := 0.1 us; -- Clock Low to Data Out Valid 
 
     type  i2c_states IS (wait_for_start, start, recive_data, stop, send_ack, send_data);
 	signal state, next_state : i2c_states := wait_for_start;
@@ -30,8 +32,10 @@ architecture Behavioral of I2C is
     signal SCL_counter : integer := 0;
     
     signal internal_SDA : STD_LOGIC := 'Z';
+    signal is_reciver : STD_LOGIC := '0';
+    
 begin
-
+   
     reg : process(next_state, RESET) -- process which switches states
     begin
         if (RESET='1') then
@@ -58,9 +62,15 @@ begin
                     end if;
                     
                 when recive_data => 
-                    if(SCL_counter = WORD_SIZE + 1) then
-                        next_state <= stop;
+                    if(SCL_counter = WORD_SIZE) then
+                        next_state <= send_ack;
                     end if;
+                 
+                when send_ack =>
+                    
+                
+                when send_data =>
+                    
                     
                 when stop =>              
                     if(SCL = '1' and rising_edge(SDA)) then
@@ -75,13 +85,13 @@ begin
 
         if (state = stop and RESET = '1') then
             scl_counter <= 0;
-        elsif(state = recive_data and rising_edge(SCL) and scl_counter <= WORD_SIZE + 1) then
+        elsif(state = recive_data and SCL = '1' and scl_counter <= WORD_SIZE) then
             scl_counter <= scl_counter + 1;
         end if;
             
     end process scl_counter_proc;
     
-
-    SDA <= internal_SDA;
+    
+    SDA <= internal_SDA when is_reciver = '1' else 'Z';
 
 end Behavioral;
