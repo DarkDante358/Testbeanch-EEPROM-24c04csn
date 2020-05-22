@@ -16,6 +16,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity I2C is
   Port ( SDA : INOUT STD_LOGIC;
          SCL : IN STD_LOGIC;
+         A: IN STD_LOGIC_VECTOR (2 downto 0);
          DATA: INOUT STD_LOGIC_VECTOR (7 downto 0);
          ACTIONS: IN STD_LOGIC;
          RESET: IN STD_LOGIC);
@@ -26,6 +27,8 @@ architecture Behavioral of I2C is
     constant tHIGH : time := 0.6 us; -- Datasheet Table 5, used for delay of data sampling, to not hit SCL state change
     constant tAA : time := 0.1 us; -- Clock Low to Data Out Valid 
     constant minimalTimeStep : time := 0.1 us; -- Minimal time needed for delay in data sampling
+    
+    signal device_address: STD_LOGIC_VECTOR (6 downto 0) := "1010000"; -- Holds device address
     
     signal time_steps : integer := 0; -- Count of minimal time steps since last start of the transmition
     signal shot_time_steps : integer := 0; -- How many time steps since state change
@@ -40,6 +43,9 @@ architecture Behavioral of I2C is
     signal is_reciver : STD_LOGIC := '0';
     
 begin
+    
+    device_address(1) <= A(1);
+    device_address(2) <= A(2);
    
     reg : process(next_state, RESET) -- process which switches states
     begin
