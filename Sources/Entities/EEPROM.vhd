@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub WÃ³jcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: EEPROM
 -- Desc: Collection of components designed to mimic 24C04 EEPROM
 ----------------------------------------------------------------------------------
