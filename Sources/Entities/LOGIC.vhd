@@ -21,6 +21,7 @@ entity LOGIC is
          WORD: OUT STD_LOGIC_VECTOR(7 downto 0);
          DATA: OUT STD_LOGIC_VECTOR(7 downto 0);
          ACTIONS: OUT STD_LOGIC_VECTOR(1 downto 0);
+         REG_SELECT: IN STD_LOGIC_VECTOR (1 downto 0);
          CLK: IN STD_LOGIC;
          RW: OUT STD_LOGIC;
          RESET: IN STD_LOGIC);

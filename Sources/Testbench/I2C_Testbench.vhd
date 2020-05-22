@@ -34,6 +34,7 @@ architecture behave of I2C_Testbench is
              SCL : IN STD_LOGIC;
              DATA: INOUT STD_LOGIC_VECTOR (7 downto 0);
              ACTIONS: IN STD_LOGIC_VECTOR (1 downto 0);
+             REG_SELECT: OUT STD_LOGIC_VECTOR (1 downto 0);
              RESET: IN STD_LOGIC;
              A: IN STD_LOGIC_VECTOR (2 downto 0));
     end component I2C;
