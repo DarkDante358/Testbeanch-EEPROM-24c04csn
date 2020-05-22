@@ -33,7 +33,7 @@ architecture Behavioral of I2C is
     signal shot_time_steps : integer := 0; -- How many time steps since state change
     signal delta_time_steps : integer := 0; -- How many steps form shot to current
 
-    type  i2c_states IS (wait_for_start, start, recive_data, send_ack, send_data, reset_scl_counter, process_data);
+    type  i2c_states IS (wait_for_start, start, recive_data, send_ack, send_data, reset_scl_counter, process_data, check_address, wait_for_stop);
 	signal state, next_state, temp_state : i2c_states := wait_for_start;
     
     signal SCL_counter : integer := 0; -- holds count of SCL cycles since last restart
@@ -43,6 +43,8 @@ architecture Behavioral of I2C is
     signal is_reciver : STD_LOGIC := '0';
     
     signal internal_reg : STD_LOGIC_VECTOR(7 downto 0) := "00000000";
+    
+    signal dev_address : STD_LOGIC_VECTOR(5 downto 0) := "101000";
     
 begin
    
@@ -77,7 +79,7 @@ begin
         shot_time_steps <= time_steps;    
     end process time_step_proc2;
     
-    machine: process(RESET, SCL, SDA, SCL_counter) -- process which selects next state
+    machine: process(RESET, SCL, SDA, SCL_counter) -- process which selects next state      
     begin
          if(RESET = '1') then
             next_state <= wait_for_start;
@@ -100,9 +102,26 @@ begin
                             next_state <= wait_for_start;
                     elsif(SCL_counter = WORD_SIZE and falling_edge(SCL)) then
                         data_frames_counter <= data_frames_counter + 1;
-                        temp_state <= send_ack;
-                        next_state <= reset_scl_counter;
+                    
+                        if(data_frames_counter <= 1) then
+                            next_state <= check_address;
+                        else      
+                            temp_state <= send_ack;
+                            next_state <= reset_scl_counter; 
+                        end if;                  
                     end if;
+                 
+                when check_address =>
+                    if(internal_reg(7 downto 2) = dev_address) then
+                        next_state <= send_ack;
+                    else 
+                        temp_state <= wait_for_stop;
+                    end if;
+                    
+                when wait_for_stop =>
+                     if(SCL = '1' and rising_edge(SDA)) then
+                            next_state <= wait_for_start;
+                     end if;
                  
                 when send_ack =>
                         temp_state <= process_data;
@@ -182,5 +201,6 @@ begin
     SDA <= internal_SDA when is_reciver = '0' else 'Z';
     REG_SELECT <= std_logic_vector(to_unsigned(data_frames_counter, 2)) when state=process_data else "ZZ";
     DATA <= internal_REG when state = process_data else "ZZZZZZZZ";
+    dev_address(1 downto 0) <= A(2 downto 1); 
 
 end Behavioral;

@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wojcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: I2C_Testbench
 -- Desc: Testbench testing I2C component
 ----------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ architecture behave of I2C_Testbench is
     signal internal_SCL : STD_LOGIC := '1';
     signal flag : STD_LOGIC := '0';
     signal flag_send : STD_LOGIC := '0';
-    signal t_a : STD_LOGIC_VECTOR (2 downto 0) := "000";
+    signal t_a : STD_LOGIC_VECTOR (2 downto 0) := "010";
     
     signal counter : integer := 0;
     
@@ -110,7 +110,8 @@ architecture behave of I2C_Testbench is
   t_START <= '1';
   
   --Adress of device
-  t_tData <= "00111001";
+  --t_tData <= "10100100"; -- good address
+  t_tData <= "00111001"; -- bad address
   flag <= '1';
   wait until flag_send = '1';
   flag <= '0';
