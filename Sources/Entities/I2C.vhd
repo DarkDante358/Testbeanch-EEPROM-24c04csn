@@ -72,7 +72,7 @@ begin
         shot_time_steps <= time_steps;    
     end process time_step_proc2;
     
-    machine: process(RESET, SCL, SDA) -- process which selects next state
+    machine: process(RESET, SCL, SDA, SCL_counter) -- process which selects next state
     begin
          if(RESET = '1') then
             next_state <= wait_for_start;
@@ -90,7 +90,7 @@ begin
                     end if;
                     
                 when recive_data => 
-                    if(SCL_counter = WORD_SIZE) then
+                    if(SCL_counter = WORD_SIZE +1) then
                         temp_state <= send_ack;
                         next_state <= reset_scl_counter;
                     end if;
@@ -131,6 +131,8 @@ begin
     begin
         if(state = send_ack and delta_time_steps = 1) then
             internal_SDA <= '0';
+        elsif(state /= send_ack) then
+            internal_SDA <= 'Z';
         end if;
     end process send_ack_proc;
     
@@ -145,6 +147,6 @@ begin
     
     end process role_changer_proc;    
    
-    SDA <= internal_SDA when is_reciver = '1' else 'Z';
+    SDA <= internal_SDA when is_reciver = '0' else 'Z';
 
 end Behavioral;
