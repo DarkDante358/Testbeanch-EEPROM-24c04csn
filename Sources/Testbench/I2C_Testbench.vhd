@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
--- Authors: Jakub Wojcik, Dominik Rudzik, Karolina Sroczyk
+-- Authors: Jakub Wo³jcik, Dominik Rudzik, Karolina Sroczyk
 -- Name: I2C_Testbench
 -- Desc: Testbench testing I2C component
 ----------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ architecture behave of I2C_Testbench is
   
     signal t_SDA : STD_LOGIC := 'Z';
     signal t_SCL : STD_LOGIC := '1';
-    signal t_DATA: STD_LOGIC_VECTOR (7 downto 0);
+    signal t_tDATA: STD_LOGIC_VECTOR (7 downto 0);
     signal t_ACTIONS: STD_LOGIC;
     signal t_RESET: STD_LOGIC := '1';
     signal t_START: STD_LOGIC := '0';
@@ -40,7 +40,6 @@ architecture behave of I2C_Testbench is
     Port map ( 
         SDA => t_SDA,
         SCL => t_SCL,
-        DATA => t_DATA,
         ACTIONS => t_ACTIONS,
         RESET => t_RESET
     );
@@ -61,25 +60,21 @@ architecture behave of I2C_Testbench is
         t_SCL90 <= '1';
         wait for time_base/4;
     end process times2;
-  
+    
     
 -- test
-    data_send : process(t_SCL90)
-    begin
-        if(t_SCL90'event and t_SCL90 = '1' and flag = '1') then
-            t_SDA <= t_DATA(0);
-                    t_DATA <= '0' & t_DATA (7 downto 1);
-        end if;  
-     end process data_send;
+--    data_send : process(t_SCL90)
+--    begin
+--        if(t_SCL90'event and t_SCL90 = '1' and flag = '1') then
+--            t_SDA <= t_tDATA(0);
+--                    t_tDATA <= 'Z' & t_tDATA (7 downto 1);
+--        end if;  
+--     end process data_send;
 
-
-   -- proces przesyÂ³ania danych (SCL90)
-   
-    --if(zbocze_barast(SCL90) and flaga przsyÂ³u danych)
 
   sym : process
   begin
-  t_RESET <= '1'; -- reset ukÂ³adu
+  t_RESET <= '1'; -- reset uk³adu
   wait for time_base;
   t_RESET <= '0';
   
@@ -88,19 +83,16 @@ architecture behave of I2C_Testbench is
   t_SDA <= '0';
   wait for time_base; -- Konice bitu startu
   t_START <= '1';
-  wait for time_base*9;
-  t_DATA <= "00001100";
-  -- WysÂ³anie 8 bitÃ³w, np liczba 12
-  
-
-  flag <= '1';
-  f_awaiting <= '1';
-  wait until rising_edge (t_SCL);
+  t_tDATA <= "00001100";
+  -- Wys³anie 8 bitów, np liczba 12
+  t_SDA <= '1';
+  wait for time_base*8;
+  t_SDA <= 'Z';
+  --wait until rising_edge (t_SCL);
   wait for time_base/2;
   wait until t_SDA = '0';
   f_awaiting <= '0';
-
-  -- Czekanie na ACK z moduÂ³u I2C
+  -- Czekanie na ACK z modu³u I2C
   
   t_START <= '0';
   
@@ -116,7 +108,5 @@ architecture behave of I2C_Testbench is
   end process sym;
   
   t_SCL <= internal_SCL when t_START = '1' else '1';
-  t_SDA <= 'Z' when f_awaiting = '1'else '0';
-  -- podobny warunek dla SDA, ale ma byÃ¦ Z, kiedy oczekuje na odpowiedÅ¸
     
 end behave;

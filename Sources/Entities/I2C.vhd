@@ -34,8 +34,8 @@ architecture Behavioral of I2C is
     signal shot_time_steps : integer := 0; -- How many time steps since state change
     signal delta_time_steps : integer := 0; -- How many steps form shot to current
 
-    type  i2c_states IS (wait_for_start, start, recive_data, stop, send_ack, send_data);
-	signal state, next_state : i2c_states := wait_for_start;
+    type  i2c_states IS (wait_for_start, start, recive_data, stop, send_ack, send_data, reset_scl_counter);
+	signal state, next_state, temp_state : i2c_states := wait_for_start;
     
     signal SCL_counter : integer := 0; -- holds count of SCL cycles since last restart
     
@@ -82,6 +82,7 @@ begin
     begin
          if(RESET = '1') then
             next_state <= wait_for_start;
+            temp_state <= wait_for_start;
         else      
             case state is
                 when wait_for_start => 
@@ -96,7 +97,8 @@ begin
                     
                 when recive_data => 
                     if(SCL_counter = WORD_SIZE) then
-                        next_state <= send_ack;
+                        temp_state <= send_ack;
+                        next_state <= reset_scl_counter;
                     end if;
                  
                 when send_ack =>
@@ -106,6 +108,11 @@ begin
                 
                 when send_data =>
                     -- TODO
+                
+                when reset_scl_counter =>
+                    if(SCL_counter = 0) then
+                        next_state <= temp_state;
+                    end if;
                     
                 when stop =>              
                     if(SCL = '1' and rising_edge(SDA)) then
@@ -118,9 +125,9 @@ begin
     scl_counter_proc : process (SCL, RESET, STATE)  -- counts SCL rising pulses since last restart
     begin
 
-        if (state = stop or state = send_ack or state = send_data or RESET = '1') then
+        if (state = reset_scl_counter or state = start or state = stop or RESET = '1') then
             scl_counter <= 0;
-        elsif(state = recive_data and rising_edge(SCL)) then
+        elsif(rising_edge(SCL)) then
             scl_counter <= scl_counter + 1;
         end if;
             
