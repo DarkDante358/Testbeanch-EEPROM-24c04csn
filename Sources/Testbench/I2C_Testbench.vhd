@@ -110,8 +110,8 @@ architecture behave of I2C_Testbench is
   t_START <= '1';
   
   --Adress of device
-  --t_tData <= "10100100"; -- good address
-  t_tData <= "00111001"; -- bad address
+  t_tData <= "10100100"; -- good address
+  --t_tData <= "00111001"; -- bad address
   flag <= '1';
   wait until flag_send = '1';
   flag <= '0';
@@ -123,6 +123,7 @@ architecture behave of I2C_Testbench is
   t_tData <= "00111111";
   flag <= '1';
   wait until flag_send = '1';
+  wait for time_base/4;
   flag <= '0';
   
   --Waiting for ack
@@ -132,10 +133,12 @@ architecture behave of I2C_Testbench is
   t_tData <= "10000001";
   flag <= '1';
   wait until flag_send = '1';
+  wait for time_base/4;
   flag <= '0';
   
   --Waiting for ack
   wait until (t_SDA = '0' and t_SCL = '1');
+  wait for time_base/4;
   wait for time_base;
   
   --Stop

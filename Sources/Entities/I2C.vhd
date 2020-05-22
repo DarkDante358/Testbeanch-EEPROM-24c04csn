@@ -79,7 +79,7 @@ begin
         shot_time_steps <= time_steps;    
     end process time_step_proc2;
     
-    machine: process(RESET, SCL, SDA, SCL_counter) -- process which selects next state      
+    machine: process(RESET, SCL, SDA, SCL_counter, state) -- process which selects next state      
     begin
          if(RESET = '1') then
             next_state <= wait_for_start;
@@ -100,12 +100,12 @@ begin
                 when recive_data => 
                     if(SCL = '1' and rising_edge(SDA)) then
                             next_state <= wait_for_start;
-                    elsif(SCL_counter = WORD_SIZE and falling_edge(SCL)) then
+                    elsif(SCL_counter = WORD_SIZE and falling_edge(SCL)) then 
                         data_frames_counter <= data_frames_counter + 1;
-                    
-                        if(data_frames_counter <= 1) then
+                        
+                        if(data_frames_counter = 1) then
                             next_state <= check_address;
-                        else      
+                        else  
                             temp_state <= send_ack;
                             next_state <= reset_scl_counter; 
                         end if;                  
@@ -115,7 +115,7 @@ begin
                     if(internal_reg(7 downto 2) = dev_address) then
                         next_state <= send_ack;
                     else 
-                        temp_state <= wait_for_stop;
+                        next_state <= wait_for_stop;
                     end if;
                     
                 when wait_for_stop =>
@@ -172,7 +172,7 @@ begin
     begin
         if (state = reset_scl_counter or RESET = '1') then
             scl_counter <= 0;
-        elsif(rising_edge(SCL)) then
+        elsif(rising_edge(SCL) and state /= process_data) then
             scl_counter <= scl_counter + 1;
         end if;
             
