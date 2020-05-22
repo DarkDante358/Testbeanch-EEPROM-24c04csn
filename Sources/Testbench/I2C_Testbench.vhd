@@ -68,27 +68,28 @@ architecture behave of I2C_Testbench is
         wait for time_base/4;
     end process times2;
     
-    data_send : process(t_SCL90, flag, counter)
+    data_send : process(t_SCL90, flag, counter, t_SCL)
     begin
-        if(falling_edge(t_SCL90) and flag = '1' ) then
-            if(t_tDATA(7-counter)='1' and counter <= 7) then
+        if(falling_edge(t_SCL90) and flag = '1' and counter > 0) then
+            if(t_tDATA(8-counter)='1') then
                 internal_SDA1 <= 'H';
             else
                 internal_SDA1 <= '0';
             end if;
-            
-            if(counter < 8 ) then
-                counter <= counter +1;
-            end if;
         end if;  
         
-        if(counter = 8) then
-            flag_send <= '1';
+        if( falling_edge(t_SCL)) then
+            if(counter < 8) then
+               counter <= counter +1;
+            elsif(counter >= 8) then
+                flag_send <= '1';
+            end if;
         end if;
          
         if (flag = '0') then
             counter <= 0;
-            flag_send <= '0';   
+            flag_send <= '0';
+            internal_SDA1 <= 'Z';   
         end if;
      end process data_send;
 
@@ -133,13 +134,14 @@ architecture behave of I2C_Testbench is
   
   --Waiting for ack
   wait until (t_SDA = '0' and t_SCL = '1');
+  wait for time_base;
   
   --Stop
   t_START <= '0';
+  internal_SDA2 <= '0';
   wait for time_base/2; 
   internal_SDA2 <= 'H';
   wait for time_base*2;
-  t_START <= '0';
   internal_SDA2 <= 'H'; -- koniec transmisji
   wait for time_base*4;
   
