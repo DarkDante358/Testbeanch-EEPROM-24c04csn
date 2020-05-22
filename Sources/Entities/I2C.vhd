@@ -18,6 +18,7 @@ entity I2C is
          SCL : IN STD_LOGIC;
          DATA: INOUT STD_LOGIC_VECTOR (7 downto 0);
          ACTIONS: IN STD_LOGIC_VECTOR (1 downto 0);
+         REG_SELECT: OUT STD_LOGIC_VECTOR (1 downto 0);
          A: IN STD_LOGIC_VECTOR (2 downto 0);
          RESET: IN STD_LOGIC);
 end I2C;
@@ -32,13 +33,16 @@ architecture Behavioral of I2C is
     signal shot_time_steps : integer := 0; -- How many time steps since state change
     signal delta_time_steps : integer := 0; -- How many steps form shot to current
 
-    type  i2c_states IS (wait_for_start, start, recive_data, send_ack, send_data, reset_scl_counter, prcess_data);
+    type  i2c_states IS (wait_for_start, start, recive_data, send_ack, send_data, reset_scl_counter, process_data);
 	signal state, next_state, temp_state : i2c_states := wait_for_start;
     
     signal SCL_counter : integer := 0; -- holds count of SCL cycles since last restart
+    signal data_frames_counter : integer :=0; -- holds count of recived data frames since last restart
     
     signal internal_SDA : STD_LOGIC := 'Z';
     signal is_reciver : STD_LOGIC := '0';
+    
+    signal internal_reg : STD_LOGIC_VECTOR(7 downto 0) := "00000000";
     
 begin
    
@@ -87,6 +91,7 @@ begin
                     
                 when start => 
                     if(falling_edge(SCL)) then
+                        data_frames_counter <= 0;
                         next_state <= recive_data;
                     end if;
                     
@@ -94,15 +99,16 @@ begin
                     if(SCL = '1' and rising_edge(SDA)) then
                             next_state <= wait_for_start;
                     elsif(SCL_counter = WORD_SIZE and falling_edge(SCL)) then
+                        data_frames_counter <= data_frames_counter + 1;
                         temp_state <= send_ack;
                         next_state <= reset_scl_counter;
                     end if;
                  
                 when send_ack =>
-                        temp_state <= prcess_data;
+                        temp_state <= process_data;
                         next_state <= reset_scl_counter;
                   
-                when prcess_data =>
+                when process_data =>
                 
                 if(falling_edge(SCL)) then
                     if(ACTIONS = "00") then
@@ -126,6 +132,23 @@ begin
         end if;
     end process machine;
     
+    data_proc : process (state, SCL_counter, RESET)
+    begin
+        
+        if(RESET = '1') then
+            internal_reg <= (others => '0');
+        elsif (state = recive_data and SCL_counter <= WORD_SIZE and SCL_counter > 0) then
+            if(SDA = 'H') then
+                internal_reg(8-SCL_counter) <= '1';
+            else
+                internal_reg(8-SCL_counter) <= '0';
+            end if;
+        elsif (state = process_data) then
+            DATA <= internal_reg;
+        end if;
+        
+    end process data_proc;
+    
     scl_counter_proc : process (SCL, RESET, STATE)  -- counts SCL rising pulses since last restart
     begin
         if (state = reset_scl_counter or RESET = '1') then
@@ -138,9 +161,9 @@ begin
     
     send_ack_proc : process (state, delta_time_steps)   -- sneds ACK bit
     begin
-        if((state = send_ack or state = prcess_data )and delta_time_steps = 1) then
+        if((state = send_ack or state = process_data )and delta_time_steps = 1) then
             internal_SDA <= '0';
-        elsif(state /= send_ack and state /= prcess_data) then
+        elsif(state /= send_ack and state /= process_data) then
             internal_SDA <= 'Z';
         end if;
     end process send_ack_proc;
@@ -148,7 +171,7 @@ begin
     role_changer_proc : process (state) -- determines whether module is a receiving or transmitting information
     begin 
     
-        if(state = send_ack or state = send_data or state = prcess_data) then
+        if(state = send_ack or state = send_data or state = process_data) then
             is_reciver <= '0';
         else
             is_reciver <= '1';
@@ -157,5 +180,7 @@ begin
     end process role_changer_proc;    
    
     SDA <= internal_SDA when is_reciver = '0' else 'Z';
+    REG_SELECT <= std_logic_vector(to_unsigned(data_frames_counter, 2)) when state=process_data else "ZZ";
+    DATA <= internal_REG when state = process_data else "ZZZZZZZZ";
 
 end Behavioral;
