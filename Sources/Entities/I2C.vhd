@@ -86,7 +86,8 @@ begin
             case state is
                 when wait_for_start => 
                     if(SCL = '1' and falling_edge(SDA)) then
-                        next_state <= recive_data;
+                        temp_state <= recive_data;
+                        next_state <= reset_scl_counter;
                     end if;
                     
                 when start => 
@@ -143,8 +144,6 @@ begin
             else
                 internal_reg(8-SCL_counter) <= '0';
             end if;
-        elsif (state = process_data) then
-            DATA <= internal_reg;
         end if;
         
     end process data_proc;
@@ -161,9 +160,9 @@ begin
     
     send_ack_proc : process (state, delta_time_steps)   -- sneds ACK bit
     begin
-        if((state = send_ack or state = process_data )and delta_time_steps = 1) then
+        if((state = send_ack or state = process_data or state = reset_scl_counter)and delta_time_steps = 1) then
             internal_SDA <= '0';
-        elsif(state /= send_ack and state /= process_data) then
+        elsif(state = recive_data) then
             internal_SDA <= 'Z';
         end if;
     end process send_ack_proc;

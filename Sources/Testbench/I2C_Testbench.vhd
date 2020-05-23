@@ -15,7 +15,7 @@ architecture behave of I2C_Testbench is
   
     signal t_SDA : STD_LOGIC := 'H';
     signal t_SCL : STD_LOGIC := '1';
-    signal t_tDATA: STD_LOGIC_VECTOR (7 downto 0);
+    signal t_tDATA: STD_LOGIC_VECTOR (7 downto 0) := "00000000";
     signal internal_SDA1: STD_LOGIC := 'Z';
     signal internal_SDA2: STD_LOGIC := 'Z';
     signal t_ACTIONS: STD_LOGIC_VECTOR (1 downto 0) := "00";
@@ -90,7 +90,7 @@ architecture behave of I2C_Testbench is
         if (flag = '0') then
             counter <= 0;
             flag_send <= '0';
-            internal_SDA1 <= 'Z';   
+            internal_SDA1 <= 'H';   
         end if;
      end process data_send;
 
@@ -129,6 +129,99 @@ architecture behave of I2C_Testbench is
   
   --Word
   t_tData <= "10000001";
+  flag <= '1';
+  wait until flag_send = '1';
+  flag <= '0';
+  
+  --Waiting for ack
+  wait until (t_SDA = '0' and t_SCL = '1');
+  wait for time_base;
+  
+  --Stop
+  t_START <= '0';
+  internal_SDA2 <= '0';
+  wait for time_base/2; 
+  internal_SDA2 <= 'H';
+  wait for time_base*2;
+  internal_SDA2 <= 'H'; -- koniec transmisji
+  wait for time_base*4;
+  
+  
+  -- transmisja 2
+  
+    --Start
+   internal_SDA2 <= 'H'; 
+   wait for time_base;
+  internal_SDA2 <= '0';
+  wait for time_base; 
+  t_START <= '1';
+  
+  --Adress of device
+  t_tData <= "00000001";
+  flag <= '1';
+  wait until flag_send = '1';
+  flag <= '0';
+  
+  --Waiting for ack
+  wait until (t_SDA = '0' and t_SCL = '1');
+
+ --Cell Aderess
+  t_tData <= "11000000";
+  flag <= '1';
+  wait until flag_send = '1';
+  flag <= '0';
+  
+  --Waiting for ack
+  wait until (t_SDA = '0' and t_SCL = '1');
+  
+  --Word
+  t_tData <= "01111110";
+  flag <= '1';
+  wait until flag_send = '1';
+  flag <= '0';
+  
+  --Waiting for ack
+  wait until (t_SDA = '0' and t_SCL = '1');
+  wait for time_base;
+  
+  --Stop
+  t_START <= '0';
+  internal_SDA2 <= '0';
+  wait for time_base/2; 
+  internal_SDA2 <= 'H';
+  wait for time_base*2;
+  internal_SDA2 <= 'H'; -- koniec transmisji
+  wait for time_base*4;
+  
+  -- transmisja 3
+  
+ --Start
+   internal_SDA2 <= 'H'; 
+   wait for time_base;
+  internal_SDA2 <= '0';
+  wait for time_base; 
+  t_START <= '1';
+  
+  --Adress of device
+  t_tData <= "00000000";
+  flag <= '1';
+  wait until flag_send = '1';
+  flag <= '0';
+  
+  --Waiting for ack
+  wait until (t_SDA = '0' and t_SCL = '1');
+
+ --Cell Aderess
+  t_tData <= "01010000";
+  flag <= '1';
+  wait until flag_send = '1';
+  flag <= '0';
+  
+  --Waiting for ack
+  wait until (t_SDA = '0' and t_SCL = '1');
+  
+  --Word
+  t_tData <= "01010101";
   flag <= '1';
   wait until flag_send = '1';
   flag <= '0';

@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 -- Authors: Jakub Wójcik, Dominik Rudzik, Karolina Sroczyk
--- Name: EEPROM_Testbench
+-- Name: EEPROM_Testbench - only I2C
 -- Desc: Testbench Testing MASTER and EEPROM components
 ----------------------------------------------------------------------------------
 library ieee;
@@ -13,30 +13,32 @@ end EEPROM_Testbench;
 architecture behave of EEPROM_Testbench is
  
   signal t_CLK     : std_logic := '0';
-  signal t_Button    : std_logic := '1';
+  signal t_Button    : std_logic := '0';
   signal t_Reset : std_logic := '1';
   signal t_A  : std_logic_vector (2 downto 0) := (others => '0');
-  signal t_SDA : std_logic := 'Z';
-  signal t_SCL : std_logic := 'Z';
-  signal t_WP : std_logic := '0';
+  signal t_SDA : std_logic;
+  signal t_SCL : std_logic;
+  signal t_ACTIONS : std_logic_vector (1 downto 0) := (others => '0');
   
-    component EEPROM is
-    port (
-      e_Reset       : in  std_logic;
-      e_A : in std_logic_vector (2 downto 0); -- BIty
-      e_WP : in std_logic; -- ochrona wczytania WP = 1 zapis
-      e_SDA   : inout std_logic; -- szyna danych
-      e_SCL : in  std_logic --  szyna zegara
-      );
-    end component EEPROM;
+  signal first_loop : std_logic := '1';
+  
+   component I2C is
+      Port ( SDA : INOUT STD_LOGIC;
+             SCL : IN STD_LOGIC;
+             DATA: INOUT STD_LOGIC_VECTOR (7 downto 0); -- Komunikacja z innym modu³em
+             ACTIONS: IN STD_LOGIC_VECTOR (1 downto 0); -- Komunikacja z innym modu³em
+             REG_SELECT: OUT STD_LOGIC_VECTOR (1 downto 0); -- Komunikacja z innym modu³em
+             A: IN STD_LOGIC_VECTOR (2 downto 0); -- Jeszcze nie aktywne
+             RESET: IN STD_LOGIC);
+    end component I2C;
 
     component MASTER is
     port (
-      m_SDA : inout  std_logic;
-      m_SCL : in std_logic;
-      m_CLK : in std_logic; 
-      m_Button   : inout std_logic; 
-      m_Reset : in  std_logic 
+      SDA : inout  std_logic;
+      SCL : out std_logic;
+      CLK : in std_logic; 
+      Button   : in std_logic; 
+      Reset : in  std_logic 
       );
     end component MASTER;
   
@@ -46,34 +48,48 @@ architecture behave of EEPROM_Testbench is
     clk_proc : process
     begin
         t_CLK  <= '0';
-        wait for clk_period;
+        wait for clk_period/2;
         t_CLK <= '1';
-        wait for clk_period;
+        wait for clk_period/2;
     end process clk_proc;
     
 -- Component instances
-    uut1 : EEPROM
+    uut1 : I2C
     Port map (
-      e_Reset => t_Reset,
-      e_A => t_A,
-      e_WP => t_WP,
-      e_SDA => t_SDA,
-      e_SCL => t_SCL
+      ACTIONS => t_ACTIONS,
+      RESET => t_RESET,
+      SDA => t_SDA,
+      SCL => t_SCL,
+      A => t_A
       );
       
     uut2 : MASTER
     Port map (
-      m_Reset => t_Reset,
-      m_CLK => t_CLK,
-      m_Button => t_Button,
-      m_SDA => t_SDA,
-      m_SCL => t_SCL
+      Reset => t_Reset,
+      CLK => t_CLK,
+      Button => t_Button,
+      SDA => t_SDA,
+      SCL => t_SCL
       );
 
 -- test
 
   sim : process
   begin
+    if(first_loop = '1') then
+        t_RESET <= '1';
+        wait for clk_period*2;
+        t_RESET <= '0';
+        
+        first_loop <= '0';
+    end if;
+   
+    
+    t_BUTTON <= '1';
+    wait for clk_period*2;
+    t_BUTTON <= '0';
+    
+    wait for 1ms;    
   end process sim;
   
 end behave;
